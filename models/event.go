@@ -76,3 +76,14 @@ func (e *Event) Update() error {
 	_, err = stmt.Exec(e.Name, e.Description, e.DataTIme, e.Location, e.ID)
 	return err
 }
+
+func (e *Event) Delete() error {
+	query := "DELETE FROM events WHERE id = ?"
+	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		panic("Could not prepare statement.")
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(e.ID)
+	return err
+}
