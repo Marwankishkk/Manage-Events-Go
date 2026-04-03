@@ -32,15 +32,15 @@ func getEvent(c *gin.Context) {
 	c.JSON(http.StatusOK, event)
 }
 func createEvent(c *gin.Context) {
+
 	var event models.Event
 	err := c.ShouldBindJSON(&event)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	event.ID = 1
-	event.UserID = 1
+	userID := c.GetInt64("userID")
+	event.UserID = userID
 	err = event.Save()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not save event."})
