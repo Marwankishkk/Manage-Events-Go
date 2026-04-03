@@ -21,3 +21,23 @@ func signup(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "User created successfully", "user": user})
 }
+
+func login(c *gin.Context) {
+	var user models.User
+	err := c.ShouldBindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	isValid, err := user.ValidateCredentials()
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Could not validate credentials."})
+		return
+	}
+	if !isValid {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid email or password."})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Login successful"})
+
+}
